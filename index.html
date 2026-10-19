@@ -106,11 +106,45 @@ border-radius:20px;
 margin-top:20px;
 text-align:center;
 }
+
+.layout{
+display:grid;
+grid-template-columns:70% 30%;
+gap:20px;
+}
+
+.hostPanel{
+background:white;
+border-radius:20px;
+padding:20px;
+height:fit-content;
+position:sticky;
+top:20px;
+}
+
+.hostQuestion{
+background:#e0f2fe;
+padding:15px;
+border-radius:12px;
+font-size:22px;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+.hostAnswer{
+background:#dbeafe;
+padding:10px;
+border-radius:10px;
+margin-bottom:8px;
+font-weight:bold;
+}
 </style>
 </head>
 
 <body>
+<div class="layout">
 
+<div>
 <h1>TikTok Feud</h1>
 
 <div class="badge" id="roundLabel"></div>
@@ -134,7 +168,7 @@ text-align:center;
 
 </div>
 
-<div class="question" id="question"></div>
+
 
 <div id="answers"></div>
 
@@ -174,7 +208,48 @@ Reveal Match
 <h2>Current Winner</h2>
 <h1 id="winnerText">Tie Game</h1>
 </div>
+</div>
 
+<div class="hostPanel">
+
+<h2>🎮 Host Panel</h2>
+
+<h3>Current Question</h3>
+
+<div
+id="hostQuestion"
+class="hostQuestion">
+</div>
+
+<h3>Answers</h3>
+
+<div id="hostAnswers"></div>
+
+<hr>
+
+<h3>Team Names</h3>
+
+<input
+id="teamAInput"
+placeholder="Team A Name">
+
+<button onclick="saveTeamAName()">
+Save Team A
+</button>
+
+<br>
+
+<input
+id="teamBInput"
+placeholder="Team B Name">
+
+<button onclick="saveTeamBName()">
+Save Team B
+</button>
+
+</div>
+
+</div>
 <script>
 
 const questions = [
@@ -236,6 +311,14 @@ let strikes = 0;
 let teamA = 0;
 let teamB = 0;
 
+let teamAName =
+localStorage.getItem("teamAName")
+|| "Team A";
+
+let teamBName =
+localStorage.getItem("teamBName")
+|| "Team B";
+
 function currentQuestion(){
 return questions[round];
 }
@@ -244,9 +327,26 @@ function updateBoard(){
 
 let q = currentQuestion();
 
-document.getElementById("question").innerText =
+document.getElementById(
+"hostQuestion"
+).innerText =
 q.question;
+let hostHtml = "";
 
+q.answers.forEach((a,i)=>{
+
+hostHtml += `
+<div class="hostAnswer">
+${i+1}. ${a[0]} (${a[1]})
+</div>
+`;
+
+});
+
+document.getElementById(
+"hostAnswers"
+).innerHTML =
+hostHtml;
 let label = "Regular Round";
 
 if(q.multiplier===2){
@@ -287,7 +387,13 @@ document.getElementById("strikes").innerText =
 
 document.getElementById("boardScore").innerText =
 boardScore();
+document.querySelector(
+".top .card:nth-child(1) h2"
+).innerText = teamAName;
 
+document.querySelector(
+".top .card:nth-child(3) h2"
+).innerText = teamBName;
 document.getElementById("teamAScore").innerText =
 teamA;
 
@@ -296,8 +402,11 @@ teamB;
 
 let winner = "Tie Game";
 
-if(teamA > teamB) winner = "Team A";
-if(teamB > teamA) winner = "Team B";
+if(teamA > teamB)
+winner = teamAName;
+
+if(teamB > teamA)
+winner = teamBName;
 
 document.getElementById("winnerText").innerText =
 winner;
@@ -456,6 +565,37 @@ revealed = data.revealed || [];
 strikes = data.strikes || 0;
 teamA = data.teamA || 0;
 teamB = data.teamB || 0;
+
+}
+function saveTeamAName(){
+
+teamAName =
+document.getElementById(
+"teamAInput"
+).value || "Team A";
+
+localStorage.setItem(
+"teamAName",
+teamAName
+);
+
+updateBoard();
+
+}
+
+function saveTeamBName(){
+
+teamBName =
+document.getElementById(
+"teamBInput"
+).value || "Team B";
+
+localStorage.setItem(
+"teamBName",
+teamBName
+);
+
+updateBoard();
 
 }
 
