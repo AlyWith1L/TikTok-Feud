@@ -153,10 +153,32 @@ margin-bottom:15px;
 
 <div class="strikes" id="strikes"></div>
 
-<div class="controls">
+<div class="controls" id="controls">
 
 <h2>Host Controls</h2>
+<hr>
 
+<h3>Team Names</h3>
+
+<input
+id="teamAInput"
+placeholder="Team A Name">
+
+<button onclick="saveTeamAName()">
+Save Team A
+</button>
+
+<br>
+
+<input
+id="teamBInput"
+placeholder="Team B Name">
+
+<button onclick="saveTeamBName()">
+Save Team B
+</button>
+
+<hr>
 <input
 id="guessInput"
 placeholder="Type answer..."
@@ -206,6 +228,8 @@ Reset Round
 <script>
 
 const questions = [
+const hostMode =
+window.location.search.includes("host");
 
 {
 question:"Name something people check every day",
@@ -264,6 +288,12 @@ let strikes = 0;
 let teamA = 0;
 let teamB = 0;
 
+let teamAName =
+localStorage.getItem("teamAName") || "Team A";
+
+let teamBName =
+localStorage.getItem("teamBName") || "Team B";
+
 function currentQuestion(){
 return questions[round];
 }
@@ -299,10 +329,25 @@ html += `
 class="answer ${open ? "revealed" : ""}"
 onclick="reveal(${index})"
 >
-${open ?
+${
+hostMode
+?
+(
+open
+?
 (index+1)+". "+ans[0]+" ("+ans[1]+")"
 :
-(index+1)}
+(index+1)+". "+ans[0]
+)
+:
+(
+open
+?
+(index+1)+". "+ans[0]+" ("+ans[1]+")"
+:
+(index+1)
+)
+}
 </div>
 `;
 
@@ -316,7 +361,15 @@ document.getElementById("strikes").innerText =
 
 document.getElementById("boardScore").innerText =
 boardScore();
+document.getElementById(
+"teamAName"
+).innerText =
+teamAName;
 
+document.getElementById(
+"teamBName"
+).innerText =
+teamBName;
 document.getElementById("teamAScore").innerText =
 teamA;
 
@@ -325,8 +378,12 @@ teamB;
 
 let winner = "Tie Game";
 
-if(teamA>teamB) winner = "Team A";
-if(teamB>teamA) winner = "Team B";
+if(teamA > teamB)
+winner = teamAName;
+
+if(teamB > teamA)
+winner = teamBName;
+
 
 document.getElementById("winnerText").innerText =
 winner;
@@ -492,8 +549,51 @@ teamA = data.teamA || 0;
 teamB = data.teamB || 0;
 
 }
+function saveTeamAName(){
 
+teamAName =
+document.getElementById(
+"teamAInput"
+).value.trim() || "Team A";
+
+localStorage.setItem(
+"teamAName",
+teamAName
+);
+
+updateBoard();
+
+}
+
+function saveTeamBName(){
+
+teamBName =
+document.getElementById(
+"teamBInput"
+).value.trim() || "Team B";
+
+localStorage.setItem(
+"teamBName",
+teamBName
+);
+
+updateBoard();
+
+}
+  function setupMode(){
+
+if(!hostMode){
+
+document.getElementById(
+"controls"
+).style.display =
+"none";
+
+}
+
+}
 loadGame();
+setupMode();
 updateBoard();
 
 </script>
