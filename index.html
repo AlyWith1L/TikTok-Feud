@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>TikTok Feud</title>
 
 <style>
@@ -19,7 +18,6 @@ text-align:center;
 color:white;
 font-size:60px;
 margin:10px 0;
-text-shadow:0 0 15px rgba(0,0,0,.3);
 }
 
 .top{
@@ -34,7 +32,6 @@ background:white;
 border-radius:20px;
 padding:15px;
 text-align:center;
-box-shadow:0 6px 20px rgba(0,0,0,.15);
 }
 
 .score{
@@ -62,11 +59,6 @@ margin-bottom:10px;
 font-size:28px;
 text-align:center;
 cursor:pointer;
-transition:.3s;
-}
-
-.answer:hover{
-transform:scale(1.02);
 }
 
 .revealed{
@@ -82,7 +74,6 @@ margin-top:25px;
 
 input,button{
 padding:10px;
-font-size:16px;
 margin:5px;
 border-radius:10px;
 border:none;
@@ -94,22 +85,10 @@ color:white;
 cursor:pointer;
 }
 
-button:hover{
-background:#0369a1;
-}
-
 .strikes{
 text-align:center;
 font-size:80px;
 margin:20px;
-}
-
-.winner{
-background:white;
-padding:20px;
-border-radius:20px;
-margin-top:20px;
-text-align:center;
 }
 
 .badge{
@@ -119,9 +98,17 @@ font-weight:bold;
 color:white;
 margin-bottom:15px;
 }
-</style>
 
+.winner{
+background:white;
+padding:20px;
+border-radius:20px;
+margin-top:20px;
+text-align:center;
+}
+</style>
 </head>
+
 <body>
 
 <h1>TikTok Feud</h1>
@@ -131,7 +118,7 @@ margin-bottom:15px;
 <div class="top">
 
 <div class="card">
-<h2 id="teamAName">Team A</h2>
+<h2>Team A</h2>
 <div class="score" id="teamAScore">0</div>
 </div>
 
@@ -141,7 +128,7 @@ margin-bottom:15px;
 </div>
 
 <div class="card">
-<h2 id="teamBName">Team B</h2>
+<h2>Team B</h2>
 <div class="score" id="teamBScore">0</div>
 </div>
 
@@ -153,36 +140,13 @@ margin-bottom:15px;
 
 <div class="strikes" id="strikes"></div>
 
-<div class="controls" id="controls">
+<div class="controls">
 
 <h2>Host Controls</h2>
-<hr>
 
-<h3>Team Names</h3>
-
-<input
-id="teamAInput"
-placeholder="Team A Name">
-
-<button onclick="saveTeamAName()">
-Save Team A
-</button>
-
-<br>
-
-<input
-id="teamBInput"
-placeholder="Team B Name">
-
-<button onclick="saveTeamBName()">
-Save Team B
-</button>
-
-<hr>
 <input
 id="guessInput"
-placeholder="Type answer..."
->
+placeholder="Type answer...">
 
 <button onclick="revealGuess()">
 Reveal Match
@@ -190,33 +154,19 @@ Reveal Match
 
 <br>
 
-<button onclick="addStrike()">
-Strike
-</button>
+<button onclick="addStrike()">Strike</button>
 
-<button onclick="removeStrike()">
-Remove Strike
-</button>
+<button onclick="removeStrike()">Remove Strike</button>
 
-<button onclick="awardTeamA()">
-Award Team A
-</button>
+<button onclick="awardTeamA()">Award Team A</button>
 
-<button onclick="awardTeamB()">
-Award Team B
-</button>
+<button onclick="awardTeamB()">Award Team B</button>
 
-<button onclick="revealAll()">
-Reveal All
-</button>
+<button onclick="revealAll()">Reveal All</button>
 
-<button onclick="nextRound()">
-Next Round
-</button>
+<button onclick="nextRound()">Next Round</button>
 
-<button onclick="resetRound()">
-Reset Round
-</button>
+<button onclick="resetRound()">Reset Round</button>
 
 </div>
 
@@ -227,377 +177,9 @@ Reset Round
 
 <script>
 
-const hostMode =
-window.location.search.includes("host");
-
 const questions = [
 
 {
 question:"Name something people check every day",
 multiplier:1,
-answers:[
-["Phone",35],
-["Email",27],
-["Weather",15],
-["Mailbox",12],
-["Bank Account",11]
-]
-},
-
-{
-question:"Name something found in a refrigerator",
-multiplier:1,
-answers:[
-["Milk",34],
-["Eggs",24],
-["Cheese",18],
-["Juice",13],
-["Leftovers",11]
-]
-},
-
-{
-question:"Name something people take on vacation",
-multiplier:2,
-answers:[
-["Clothes",32],
-["Phone",26],
-["Toothbrush",17],
-["Camera",13],
-["Money",12]
-]
-},
-
-{
-question:"Name something people do at the beach",
-multiplier:3,
-answers:[
-["Swim",31],
-["Sunbathe",24],
-["Build Sandcastles",16],
-["Surf",15],
-["Collect Shells",14]
-]
-}
-
-];
-
-let round = 0;
-let revealed = [];
-let strikes = 0;
-
-let teamA = 0;
-let teamB = 0;
-
-let teamAName =
-localStorage.getItem("teamAName") || "Team A";
-
-let teamBName =
-localStorage.getItem("teamBName") || "Team B";
-
-function currentQuestion(){
-return questions[round];
-}
-
-function updateBoard(){
-
-let q = currentQuestion();
-
-document.getElementById("question").innerText =
-q.question;
-
-let label = "Regular Round";
-
-if(q.multiplier===2){
-label = "🔥 DOUBLE POINTS 🔥";
-}
-
-if(q.multiplier===3){
-label = "✨ TRIPLE POINTS ✨";
-}
-
-document.getElementById("roundLabel").innerText =
-label;
-
-let html = "";
-
-q.answers.forEach((ans,index)=>{
-
-let open = revealed.includes(index);
-
-html += `
-<div
-class="answer ${open ? "revealed" : ""}"
-onclick="reveal(${index})"
->
-${
-hostMode
-?
-(
-open
-?
-(index+1)+". "+ans[0]+" ("+ans[1]+")"
-:
-(index+1)+". "+ans[0]
-)
-:
-(
-open
-?
-(index+1)+". "+ans[0]+" ("+ans[1]+")"
-:
-(index+1)
-)
-}
-</div>
-`;
-
-});
-
-document.getElementById("answers").innerHTML =
-html;
-
-document.getElementById("strikes").innerText =
-"❌".repeat(strikes);
-
-document.getElementById("boardScore").innerText =
-boardScore();
-document.getElementById(
-"teamAName"
-).innerText =
-teamAName;
-
-document.getElementById(
-"teamBName"
-).innerText =
-teamBName;
-document.getElementById("teamAScore").innerText =
-teamA;
-
-document.getElementById("teamBScore").innerText =
-teamB;
-
-let winner = "Tie Game";
-
-if(teamA > teamB)
-winner = teamAName;
-
-if(teamB > teamA)
-winner = teamBName;
-
-
-document.getElementById("winnerText").innerText =
-winner;
-
-saveGame();
-
-}
-
-function reveal(index){
-
-if(!revealed.includes(index)){
-revealed.push(index);
-updateBoard();
-}
-
-}
-
-function revealGuess(){
-
-let text =
-document
-.getElementById("guessInput")
-.value
-.toLowerCase();
-
-let q = currentQuestion();
-
-q.answers.forEach((a,i)=>{
-
-if(
-a[0]
-.toLowerCase()
-.includes(text)
-){
-
-if(!revealed.includes(i)){
-revealed.push(i);
-}
-
-}
-
-});
-
-document.getElementById("guessInput").value = "";
-
-updateBoard();
-
-}
-
-function boardScore(){
-
-let q = currentQuestion();
-
-let total = 0;
-
-revealed.forEach(i=>{
-total += q.answers[i][1];
-});
-
-return total * q.multiplier;
-
-}
-
-function awardTeamA(){
-
-teamA += boardScore();
-
-updateBoard();
-
-}
-
-function awardTeamB(){
-
-teamB += boardScore();
-
-updateBoard();
-
-}
-
-function addStrike(){
-
-if(strikes<3){
-strikes++;
-updateBoard();
-}
-
-}
-
-function removeStrike(){
-
-if(strikes>0){
-strikes--;
-updateBoard();
-}
-
-}
-
-function revealAll(){
-
-revealed =
-currentQuestion().answers
-.map((x,i)=>i);
-
-updateBoard();
-
-}
-
-function resetRound(){
-
-revealed=[];
-strikes=0;
-
-updateBoard();
-
-}
-
-function nextRound(){
-
-if(round < questions.length-1){
-
-round++;
-revealed=[];
-strikes=0;
-
-updateBoard();
-
-}
-
-}
-
-function saveGame(){
-
-const save = {
-
-round,
-revealed,
-strikes,
-teamA,
-teamB
-
-};
-
-localStorage.setItem(
-"tiktokfeud",
-JSON.stringify(save)
-);
-
-}
-
-function loadGame(){
-
-const save =
-localStorage.getItem("tiktokfeud");
-
-if(!save) return;
-
-const data = JSON.parse(save);
-
-round = data.round || 0;
-revealed = data.revealed || [];
-strikes = data.strikes || 0;
-teamA = data.teamA || 0;
-teamB = data.teamB || 0;
-
-}
-function saveTeamAName(){
-
-teamAName =
-document.getElementById(
-"teamAInput"
-).value.trim() || "Team A";
-
-localStorage.setItem(
-"teamAName",
-teamAName
-);
-
-updateBoard();
-
-}
-
-function saveTeamBName(){
-
-teamBName =
-document.getElementById(
-"teamBInput"
-).value.trim() || "Team B";
-
-localStorage.setItem(
-"teamBName",
-teamBName
-);
-
-updateBoard();
-
-}
-  function setupMode(){
-
-if(!hostMode){
-
-document.getElementById(
-"controls"
-).style.display =
-"none";
-
-}
-
-}
-loadGame();
-setupMode();
-updateBoard();
-
-</script>
-
-</body>
-</html>
+answers:
