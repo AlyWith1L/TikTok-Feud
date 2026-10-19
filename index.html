@@ -182,4 +182,287 @@ const questions = [
 {
 question:"Name something people check every day",
 multiplier:1,
-answers:
+answers:[
+["Phone",35],
+["Email",27],
+["Weather",15],
+["Mailbox",12],
+["Bank Account",11]
+]
+},
+
+{
+question:"Name something found in a refrigerator",
+multiplier:1,
+answers:[
+["Milk",34],
+["Eggs",24],
+["Cheese",18],
+["Juice",13],
+["Leftovers",11]
+]
+},
+
+{
+question:"Name something people take on vacation",
+multiplier:2,
+answers:[
+["Clothes",32],
+["Phone",26],
+["Toothbrush",17],
+["Camera",13],
+["Money",12]
+]
+},
+
+{
+question:"Name something people do at the beach",
+multiplier:3,
+answers:[
+["Swim",31],
+["Sunbathe",24],
+["Build Sandcastles",16],
+["Surf",15],
+["Collect Shells",14]
+]
+}
+
+];
+
+let round = 0;
+let revealed = [];
+let strikes = 0;
+
+let teamA = 0;
+let teamB = 0;
+
+function currentQuestion(){
+return questions[round];
+}
+
+function updateBoard(){
+
+let q = currentQuestion();
+
+document.getElementById("question").innerText =
+q.question;
+
+let label = "Regular Round";
+
+if(q.multiplier===2){
+label = "🔥 DOUBLE POINTS 🔥";
+}
+
+if(q.multiplier===3){
+label = "✨ TRIPLE POINTS ✨";
+}
+
+document.getElementById("roundLabel").innerText =
+label;
+
+let html = "";
+
+q.answers.forEach((ans,index)=>{
+
+let open = revealed.includes(index);
+
+html += `
+<div
+class="answer ${open ? "revealed" : ""}"
+onclick="reveal(${index})">
+${open ?
+(index+1)+". "+ans[0]+" ("+ans[1]+")"
+:
+(index+1)}
+</div>
+`;
+
+});
+
+document.getElementById("answers").innerHTML =
+html;
+
+document.getElementById("strikes").innerText =
+"❌".repeat(strikes);
+
+document.getElementById("boardScore").innerText =
+boardScore();
+
+document.getElementById("teamAScore").innerText =
+teamA;
+
+document.getElementById("teamBScore").innerText =
+teamB;
+
+let winner = "Tie Game";
+
+if(teamA > teamB) winner = "Team A";
+if(teamB > teamA) winner = "Team B";
+
+document.getElementById("winnerText").innerText =
+winner;
+
+saveGame();
+
+}
+
+function reveal(index){
+
+if(!revealed.includes(index)){
+revealed.push(index);
+updateBoard();
+}
+
+}
+
+function revealGuess(){
+
+let text =
+document
+.getElementById("guessInput")
+.value
+.toLowerCase();
+
+let q = currentQuestion();
+
+q.answers.forEach((a,i)=>{
+
+if(a[0].toLowerCase().includes(text)){
+
+if(!revealed.includes(i)){
+
+revealed.push(i);
+
+}
+
+}
+
+});
+
+document.getElementById("guessInput").value="";
+
+updateBoard();
+
+}
+
+function boardScore(){
+
+let q = currentQuestion();
+
+let total = 0;
+
+revealed.forEach(i=>{
+total += q.answers[i][1];
+});
+
+return total * q.multiplier;
+
+}
+
+function awardTeamA(){
+
+teamA += boardScore();
+updateBoard();
+
+}
+
+function awardTeamB(){
+
+teamB += boardScore();
+updateBoard();
+
+}
+
+function addStrike(){
+
+if(strikes < 3){
+
+strikes++;
+updateBoard();
+
+}
+
+}
+
+function removeStrike(){
+
+if(strikes > 0){
+
+strikes--;
+updateBoard();
+
+}
+
+}
+
+function revealAll(){
+
+revealed =
+currentQuestion().answers.map((x,i)=>i);
+
+updateBoard();
+
+}
+
+function resetRound(){
+
+revealed = [];
+strikes = 0;
+
+updateBoard();
+
+}
+
+function nextRound(){
+
+if(round < questions.length - 1){
+
+round++;
+revealed = [];
+strikes = 0;
+
+updateBoard();
+
+}
+
+}
+
+function saveGame(){
+
+localStorage.setItem(
+"tiktokfeud",
+JSON.stringify({
+round,
+revealed,
+strikes,
+teamA,
+teamB
+})
+);
+
+}
+
+function loadGame(){
+
+const save =
+localStorage.getItem("tiktokfeud");
+
+if(!save) return;
+
+const data = JSON.parse(save);
+
+round = data.round || 0;
+revealed = data.revealed || [];
+strikes = data.strikes || 0;
+teamA = data.teamA || 0;
+teamB = data.teamB || 0;
+
+}
+
+loadGame();
+updateBoard();
+
+</script>
+
+</body>
+</html>
