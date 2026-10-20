@@ -306,6 +306,144 @@ answers:[
 ["Surf",15],
 ["Collect Shells",14]
 ]
+},
+  {
+question:"Name something people lose often",
+multiplier:1,
+answers:[
+["Keys",35],
+["Phone",28],
+["Wallet",20],
+["Remote",10],
+["Glasses",7]
+]
+},
+
+{
+question:"Name something people bring to a picnic",
+multiplier:1,
+answers:[
+["Food",40],
+["Blanket",25],
+["Drinks",15],
+["Chairs",10],
+["Cooler",10]
+]
+},
+
+{
+question:"Name an animal people might be afraid of",
+multiplier:1,
+answers:[
+["Snake",35],
+["Spider",30],
+["Shark",18],
+["Bear",10],
+["Wolf",7]
+]
+},
+
+{
+question:"Name something found in a classroom",
+multiplier:1,
+answers:[
+["Desk",30],
+["Teacher",25],
+["Books",20],
+["Computer",15],
+["Board",10]
+]
+},
+
+{
+question:"Name something people do before bed",
+multiplier:1,
+answers:[
+["Brush Teeth",35],
+["Watch TV",25],
+["Read",15],
+["Set Alarm",15],
+["Pray",10]
+]
+},
+
+{
+question:"Name something found in a purse",
+multiplier:1,
+answers:[
+["Wallet",35],
+["Phone",25],
+["Makeup",20],
+["Keys",10],
+["Receipts",10]
+]
+},
+
+{
+question:"Name a popular pizza topping",
+multiplier:1,
+answers:[
+["Pepperoni",40],
+["Sausage",20],
+["Mushrooms",15],
+["Cheese",15],
+["Peppers",10]
+]
+},
+
+{
+question:"Name something kids don't want to do",
+multiplier:1,
+answers:[
+["Homework",35],
+["Chores",30],
+["Go To Bed",15],
+["Clean Room",10],
+["Eat Vegetables",10]
+]
+},
+
+{
+question:"Name something found at a carnival",
+multiplier:1,
+answers:[
+["Ferris Wheel",30],
+["Games",25],
+["Cotton Candy",20],
+["Popcorn",15],
+["Clowns",10]
+]
+},
+
+{
+question:"Name something people do at a gym",
+multiplier:1,
+answers:[
+["Run",30],
+["Lift Weights",25],
+["Stretch",20],
+["Bike",15],
+["Swim",10]
+]
+}
+function shuffleQuestions(){
+
+for(
+let i = questions.length - 1;
+i > 0;
+i--
+){
+
+const j =
+Math.floor(
+Math.random() * (i + 1)
+);
+
+[questions[i], questions[j]] =
+[questions[j], questions[i]];
+
+}
+
 }
 
 ];
@@ -514,10 +652,18 @@ function nextRound(){
 if(round < questions.length - 1){
 
 round++;
+
 revealed = [];
 strikes = 0;
 
 updateBoard();
+
+}
+else{
+
+alert(
+"All questions used!"
+);
 
 }
 
@@ -585,7 +731,7 @@ teamBName
 updateBoard();
 
 }
-
+shuffleQuestions();
 loadGame();
 updateBoard();
 
