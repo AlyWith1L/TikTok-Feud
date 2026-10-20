@@ -139,6 +139,16 @@ margin-bottom:8px;
 font-weight:bold;
 }
 </style>
+  .hostPanel button{
+width:100%;
+margin:5px 0;
+font-size:18px;
+}
+
+.hostPanel input{
+width:100%;
+box-sizing:border-box;
+}
 </head>
 
 <body>
@@ -174,35 +184,7 @@ font-weight:bold;
 
 <div class="strikes" id="strikes"></div>
 
-<div class="controls">
 
-<h2>Host Controls</h2>
-
-<input
-id="guessInput"
-placeholder="Type answer...">
-
-<button onclick="revealGuess()">
-Reveal Match
-</button>
-
-<br>
-
-<button onclick="addStrike()">Strike</button>
-
-<button onclick="removeStrike()">Remove Strike</button>
-
-<button onclick="awardTeamA()">Award Team A</button>
-
-<button onclick="awardTeamB()">Award Team B</button>
-
-<button onclick="revealAll()">Reveal All</button>
-
-<button onclick="nextRound()">Next Round</button>
-
-<button onclick="resetRound()">Reset Round</button>
-
-</div>
 
 <div class="winner">
 <h2>Current Winner</h2>
@@ -224,6 +206,50 @@ class="hostQuestion">
 <h3>Answers</h3>
 
 <div id="hostAnswers"></div>
+
+<hr>
+
+<h3>Reveal Answer</h3>
+
+<input
+id="guessInput"
+placeholder="Type answer...">
+
+<button onclick="revealGuess()">
+Reveal Match
+</button>
+
+<hr>
+
+<h3>Game Controls</h3>
+
+<button onclick="addStrike()">
+Strike
+</button>
+
+<button onclick="removeStrike()">
+Remove Strike
+</button>
+
+<button onclick="awardTeamA()">
+Award Team A
+</button>
+
+<button onclick="awardTeamB()">
+Award Team B
+</button>
+
+<button onclick="revealAll()">
+Reveal All
+</button>
+
+<button onclick="nextRound()">
+Next Round
+</button>
+
+<button onclick="resetRound()">
+Reset Round
+</button>
 
 <hr>
 
