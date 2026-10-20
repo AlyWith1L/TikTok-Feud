@@ -232,7 +232,7 @@ Reset Round
 </button>
 
 <button onclick="resetGame()">
-Reset Entire Game
+🎲 New Game
 </button>
   
 <hr>
@@ -1348,12 +1348,52 @@ teamBName
 updateBoard();
 
 }
+function shuffleQuestions(){
+
+for (
+let i = questions.length - 1;
+i > 0;
+i--
+){
+
+const j =
+Math.floor(
+Math.random() * (i + 1)
+);
+
+[questions[i], questions[j]] =
+[questions[j], questions[i]];
+
+}
+
+}
+  
 function resetGame(){
 
-if(!confirm(
-"Reset the entire game and scores?"
-)){
+if(
+!confirm(
+"Reset the entire game and randomize questions?"
+)
+){
 return;
+}
+
+shuffleQuestions();
+
+round = 0;
+
+revealed = [];
+
+strikes = 0;
+
+teamA = 0;
+
+teamB = 0;
+
+saveGame();
+
+updateBoard();
+
 }
 
 round = 0;
@@ -1373,6 +1413,49 @@ localStorage.removeItem(
 updateBoard();
 
 }
+function shuffleQuestions(){
+
+for(
+let i = questions.length - 1;
+i > 0;
+i--
+){
+
+const j =
+Math.floor(
+Math.random() * (i + 1));
+
+[questions[i], questions[j]] =
+[questions[j], questions[i]];
+
+}
+
+}
+
+function resetGame(){
+
+if(
+!confirm(
+"Start a new game and randomize all questions?"
+)
+){
+return;
+}
+
+shuffleQuestions();
+
+round = 0;
+revealed = [];
+strikes = 0;
+
+teamA = 0;
+teamB = 0;
+
+saveGame();
+
+updateBoard();
+
+}  
 loadGame();
 updateBoard();
 
