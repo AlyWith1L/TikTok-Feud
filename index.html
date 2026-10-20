@@ -737,7 +737,31 @@ teamBName
 updateBoard();
 
 }
+function resetGame(){
 
+if(!confirm(
+"Reset the entire game and scores?"
+)){
+return;
+}
+
+round = 0;
+
+revealed = [];
+
+strikes = 0;
+
+teamA = 0;
+
+teamB = 0;
+
+localStorage.removeItem(
+"tiktokfeud"
+);
+
+updateBoard();
+
+}
 loadGame();
 updateBoard();
 
