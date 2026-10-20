@@ -199,17 +199,7 @@ class="hostQuestion">
 
 <hr>
 
-<h3>Reveal Answer</h3>
 
-<input
-id="guessInput"
-placeholder="Type answer...">
-
-<button onclick="revealGuess()">
-Reveal Match
-</button>
-
-<hr>
 
 <h3>Game Controls</h3>
 
@@ -353,7 +343,15 @@ q.answers.forEach((a,i)=>{
 
 hostHtml += `
 <div class="hostAnswer">
+
 ${i+1}. ${a[0]} (${a[1]})
+
+<button
+onclick="reveal(${i})"
+style="float:right;">
+Reveal
+</button>
+
 </div>
 `;
 
@@ -440,35 +438,8 @@ updateBoard();
 
 }
 
-function revealGuess(){
 
-let text =
-document
-.getElementById("guessInput")
-.value
-.toLowerCase();
 
-let q = currentQuestion();
-
-q.answers.forEach((a,i)=>{
-
-if(a[0].toLowerCase().includes(text)){
-
-if(!revealed.includes(i)){
-
-revealed.push(i);
-
-}
-
-}
-
-});
-
-document.getElementById("guessInput").value="";
-
-updateBoard();
-
-}
 
 function boardScore(){
 
